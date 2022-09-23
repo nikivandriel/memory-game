@@ -16,6 +16,7 @@ const myField = document.getElementById('field');
 
 // Geef myField een event listener die de functie onClickCard aanroept als er op geklikt wordt
 myField.addEventListener('click', onClickCard);
+myField.addEventListener('click', onClickCover);
 
 // de volgende regel krijg je vast cadeau:
 const myCardArray = ["duck", "kitten", "piglet", "puppy", "calf", "veal", "lamb", "rooster", "horse", "mouse", "dog", "cat", "goose", "goat", "sheep", "pig", "cow", "chick", "hen"];
@@ -57,14 +58,19 @@ window.addEventListener('load', populateField());
 function populateField() {
     // maak binnen deze nieuwe functie een for loop waarin over de array myCardArray geïtereerd wordt (Mag ook met forEach, dat is zelfs beter). 
     myCardSet.forEach(element => {
+        let cover = document.createElement('img');
         let newTile = document.createElement('div');
         let newCard = document.createElement('img');
         let imgURL = 'img/' + element.card1 + '.jpg';
+
+        cover.setAttribute('src', 'img/cover.png');
+        cover.setAttribute('class', 'covered');
         newTile.setAttribute('class', 'board6');
         newCard.setAttribute('src', imgURL);
         newCard.setAttribute('name', element.card1);
         
         newTile.appendChild(newCard);
+        newTile.appendChild(cover);
         myField.appendChild(newTile);
 
     });
@@ -83,6 +89,17 @@ function populateField() {
 function onClickCard(e) {
     console.log(e.target.getAttribute('name'));
 }
+
+function onClickCover(e) {
+    const parentElement = e.target.parentNode;
+    const cardName = parentElement.firstChild.name
+    if(e.target.className === "covered") {
+        e.target.className ='uncovered';
+        console.log(cardName);
+    } return;
+}
+
+
 // Zorg er voor dat als deze functie wordt uitgevoerd, m.b.v. de method getAttribute() in het console de naam van het aangeklikte dier getoond wordt.
 // Hint, je moet hierbij gebruik maken van de verwijzing e.target omdat je de naam van het element wilt weten waar op geklikt is, dus die het 'click' event verstuurd heeft.
 
