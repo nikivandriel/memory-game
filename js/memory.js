@@ -1,91 +1,93 @@
 "use strict";
-
-// Deel 2
 class Card {
-    constructor(card1, card2=card1, set=card1, sound=card1) {
+    constructor(card1, card2 = card1, set = card1, sound = card1) {
         this.card1 = card1,
-        this.card2 = card2,
-        this.set = set,
-        this.sound = sound
+            this.card2 = card2,
+            this.set = set,
+            this.sound = sound
     }
-} 
+}
 
-
-// maak een const myField en koppel deze aan de div met id="field"
 const myField = document.getElementById('field');
+const selectField = document.getElementById('boardOptions');
 
-// Geef myField een event listener die de functie onClickCard aanroept als er op geklikt wordt
+const myCardArray = ["duck", "kitten", "piglet", "puppy", "calf", "veal", "lamb", "rooster", "horse", "mouse", "dog", "cat", "goose", "goat", "sheep", "pig", "cow", "chick", "hen"];
+
 myField.addEventListener('click', onClickCard);
 myField.addEventListener('click', onClickCover);
 
-// de volgende regel krijg je vast cadeau:
-const myCardArray = ["duck", "kitten", "piglet", "puppy", "calf", "veal", "lamb", "rooster", "horse", "mouse", "dog", "cat", "goose", "goat", "sheep", "pig", "cow", "chick", "hen"];
+selectField.addEventListener('change', onSelectFieldSize);
 
-
-// verdubbel het aantal kaarten
-let myDbCardArray = myCardArray;
-
-myDbCardArray = myDbCardArray.concat(myCardArray);
-myDbCardArray = shuffle(myDbCardArray);
-
-const myCardSet = myDbCardArray.map(card => new Card(card));
-console.log(myCardSet)
+let myCardSet;
+let boardClass;
 
 
 // schud de kaarten met Fisher–Yates
 function shuffle(array) {
     var m = array.length, t, i;
-  
-    // While there remain elements to shuffle…
     while (m) {
-  
-      // Pick a remaining element…
-      i = Math.floor(Math.random() * m--);
-  
-      // And swap it with the current element.
-      t = array[m];
-      array[m] = array[i];
-      array[i] = t;
+        i = Math.floor(Math.random() * m--);
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
     }
-  
+
     return array;
 }
 
-// geef het document een event listener die bij het laden van de pagina de functie populateField aanroept
-window.addEventListener('load', populateField());
+// selecteer een veld formaat en pas het aantal kaarten daarop aan
+function onSelectFieldSize(e) {
+    let fieldSize = e.target.value;
+    let shuffledCards = shuffle(myCardArray);
+    switch (fieldSize) {
+        case "4":
+            boardClass = "board4";
+            shuffledCards = myCardArray.slice(0,8);
+            console.log(shuffledCards);
+            break;
+        case "5": 
+            boardClass = "board5";
+            shuffledCards = myCardArray.slice(0,12);
+            console.log(shuffledCards);
+            break;
+        case "6": 
+            boardClass = "board6";
+            shuffledCards = myCardArray.slice(0,18);
+            console.log(shuffledCards);
+            break;
+    }
 
-// schrijf hier de nieuwe functie populateField()
+// verdubbel het aantal kaarten
+    let myDbCardArray = shuffledCards;
+    myDbCardArray = myDbCardArray.concat(shuffledCards);
+    myDbCardArray = shuffle(myDbCardArray);
+    myCardSet = myDbCardArray.map(card => new Card(card));
+    populateField();
+}
+
+// vul het veld met het gekozen aantal kaarten
 function populateField() {
-    // maak binnen deze nieuwe functie een for loop waarin over de array myCardArray geïtereerd wordt (Mag ook met forEach, dat is zelfs beter). 
+    myField.innerHTML = "";
     myCardSet.forEach(element => {
-        let cover = document.createElement('img');
         let newTile = document.createElement('div');
         let newCard = document.createElement('img');
+        let cover = document.createElement('img');
+        newTile.setAttribute('class', boardClass);
         let imgURL = 'img/' + element.card1 + '.jpg';
+        newCard.setAttribute('src', imgURL);
 
         cover.setAttribute('src', 'img/cover.png');
         cover.setAttribute('class', 'covered');
-        newTile.setAttribute('class', 'board6');
-        newCard.setAttribute('src', imgURL);
+
         newCard.setAttribute('name', element.card1);
-        
+
         newTile.appendChild(newCard);
         newTile.appendChild(cover);
         myField.appendChild(newTile);
 
     });
 };
-// De volgende statements komen allemaal in de loop:
-// laat met de method document.createElement() een nieuw div-element aanmaken en stop die in een nieuwe let 'newTile'
-// laat  met de method document.createElement() een nieuw img-element aanmaken en stop die in een nieuwe let 'newCard'
-// creëer een nieuwe let 'imageURL' en laat via concatination een relatieve verwijzing naar de afbeelding uit het array waar over geïtereerd wordt die de uiteindelijke vorm moet krijgen "url(img/naamDier.jpg)" waarbij naamDier in dit geval steeds een andere naam is uit het array.
-// Ken deze imageURL via setAttribute() toe aan het src attribute van let 'newCard'.
-// Ken ook de naam van het dier via setAttribute() toe aan de name attribute van de let 'newCard';
-// Ken via de appendChild() method het element 'newCard' toe aan 'newTile'
-// Ken via de appendChild() method het element 'newTile' toe aan 'myField'
 
-
-// schrijf hier de functie onClickCard(e)
 function onClickCard(e) {
     console.log(e.target.getAttribute('name'));
 }
@@ -93,13 +95,10 @@ function onClickCard(e) {
 function onClickCover(e) {
     const parentElement = e.target.parentNode;
     const cardName = parentElement.firstChild.name
-    if(e.target.className === "covered") {
-        e.target.className ='uncovered';
+    if (e.target.className === "covered") {
+        e.target.className = 'uncovered';
         console.log(cardName);
     } return;
 }
 
-
-// Zorg er voor dat als deze functie wordt uitgevoerd, m.b.v. de method getAttribute() in het console de naam van het aangeklikte dier getoond wordt.
-// Hint, je moet hierbij gebruik maken van de verwijzing e.target omdat je de naam van het element wilt weten waar op geklikt is, dus die het 'click' event verstuurd heeft.
 
