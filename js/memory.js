@@ -42,17 +42,17 @@ function onSelectFieldSize(e) {
     switch (fieldSize) {
         case "4":
             boardClass = "board4";
-            shuffledCards = myCardArray.slice(0,8);
+            shuffledCards = shuffledCards.slice(0,8);
             console.log(shuffledCards);
             break;
         case "5": 
             boardClass = "board5";
-            shuffledCards = myCardArray.slice(0,12);
+            shuffledCards = shuffledCards.slice(0,12);
             console.log(shuffledCards);
             break;
         case "6": 
             boardClass = "board6";
-            shuffledCards = myCardArray.slice(0,18);
+            shuffledCards = shuffledCards.slice(0,18);
             console.log(shuffledCards);
             break;
     }
